@@ -95,4 +95,9 @@ public class TestController {
         return Result.success(redisServer.setKey(UserPrefix.getById, String.valueOf(1), user));
     }
 
+
+
+
+
+
 }

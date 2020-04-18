@@ -10,3 +10,8 @@ gen
 /target/
 /target/*
 rebel.xml
+/bin/
+/.project
+/.gitignore
+/.classpath
+/.settings/

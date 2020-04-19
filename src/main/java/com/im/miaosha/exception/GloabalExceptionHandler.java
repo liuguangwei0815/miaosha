@@ -2,6 +2,7 @@ package com.im.miaosha.exception;
 
 import com.im.miaosha.result.MsgCode;
 import com.im.miaosha.result.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,9 +20,11 @@ import java.util.List;
  **/
 @ControllerAdvice
 @ResponseBody
+@Slf4j
 public class GloabalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result exceptionHandler(HttpServletRequest request, Exception e) {
+
         //业务类异常拦截
         if (e instanceof BusinessException) {
             MsgCode msgCode = ((BusinessException) e).getMsgCode();
@@ -33,6 +36,7 @@ public class GloabalExceptionHandler {
             ObjectError objectError = allErrors.get(0);
             return Result.fail(MsgCode.ABNORMALPARAMETERBINDING.fillArgs(objectError.getDefaultMessage()));
         } else {
+            log.error("%s异常：%s",MsgCode.SERVER_ERROR,e);
             return Result.fail(MsgCode.SERVER_ERROR);
         }
     }

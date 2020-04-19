@@ -1,6 +1,7 @@
 package com.im.miaosha.service;
 
 import com.im.miaosha.dto.LoginDto;
+import com.im.miaosha.model.MiaoshaUser;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  **/
 public interface MiaoshaUserServier {
 
+    public final static String COOKIE_NAME_TOKEN = "cookie_name_token";
 
     /**
      * 登录
@@ -21,5 +23,14 @@ public interface MiaoshaUserServier {
      * @return boolean
      */
     public boolean login(HttpServletResponse response, LoginDto loginDto);
+
+    /**
+     *  添加或者延迟分布式session信息
+     *
+     * @param token    令牌
+     * @param user     用户
+     * @param response 响应
+     */
+    public void addOrDelayByToken(String token, MiaoshaUser user, HttpServletResponse response);
 
 }

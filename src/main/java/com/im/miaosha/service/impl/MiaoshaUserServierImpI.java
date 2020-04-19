@@ -48,19 +48,31 @@ public class MiaoshaUserServierImpI implements MiaoshaUserServier {
         if (!StringUtils.equals(dbpw, convertdbPassword)) {
             throw new BusinessException(MsgCode.PASSWORDDOESNOTMATCH);
         }
-        //将我们的session放到我们的redis上面
-
+        //将我们的session放到我们的redis上面，cookie 会传递给我们下一个请求
         String token = UUIDUtils.getUID();
+        createSessionAndCookie(token, user, response);
+        return true;
+    }
+
+    @Override
+    public void addOrDelayByToken(String token,MiaoshaUser user ,HttpServletResponse response) {
+         createSessionAndCookie(token,user,response);
+    }
+
+    /**
+     * 将用户信息存储在redis cookie 存放token （其实还是一个延迟登录状态的方法）
+     *
+     * @param token    令牌
+     * @param user     用户
+     * @param response 响应
+     */
+    private void createSessionAndCookie(String token, MiaoshaUser user, HttpServletResponse response) {
         redisServer.setKey(MiaoShaUserPrefix.token, token, user);
         //设置我们的cookie 将我们的token放到我们的response 返回给浏览器
-        Cookie cookie = new Cookie("cookie_name_token",token);
+        Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);
         cookie.setMaxAge(MiaoShaUserPrefix.token.expireSeconds());
         cookie.setPath("/");
         response.addCookie(cookie);
-        System.out.println("12121");
-        System.out.println("12121");
-        System.out.println("12121");
-        System.out.println("12121");
-        return true;
     }
+
 }

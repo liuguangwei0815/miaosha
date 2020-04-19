@@ -76,6 +76,9 @@ public class DistributedSessionConfig implements HandlerMethodArgumentResolver {
     private String getTokenByCookie(HttpServletRequest request) {
         //变量所有的cookie如果name相等 返回
         Cookie[] cookies = request.getCookies();
+        if(cookies==null){
+            return null;
+        }
         for (Cookie cookie : cookies) {
             if (StringUtils.equals(cookie.getName(), MiaoshaUserServier.COOKIE_NAME_TOKEN)) {
                 return cookie.getValue();

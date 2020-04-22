@@ -60,7 +60,7 @@ public class GoodController {
         //先从缓存获取
         String html = getPageFormCache(GoodsPrefix.GOODLIST,"");
         if (StringUtils.isNotBlank(html)) {
-            return html;
+                return html;
         }
         model.addAttribute("user", user);
         //查询商品列表
@@ -104,13 +104,13 @@ public class GoodController {
      * @return {@link String}
      */
     @GetMapping(value = "/to_detail/{goodsId}",produces = MediaType.TEXT_HTML_VALUE)
-    @ResponseBody
+    //@ResponseBody
     public String details(HttpServletRequest request, HttpServletResponse response,Model model, MiaoshaUser user, @PathVariable("goodsId") Long goodsId) {
         //先从缓存获取
-        String html = getPageFormCache(GoodsPrefix.GDETAIL,String.valueOf(goodsId));
-        if (StringUtils.isNotBlank(html)) {
-            return html;
-        }
+//        String html = getPageFormCache(GoodsPrefix.GDETAIL,String.valueOf(goodsId));
+//        if (StringUtils.isNotBlank(html)) {
+//            return html;
+//        }
 
         model.addAttribute("user", user);
         GoodsVo gvo = goodsService.getGoodsVoByGoodsId(goodsId);
@@ -137,7 +137,8 @@ public class GoodController {
         }
         model.addAttribute("miaoshaStatus", state);
         model.addAttribute("remainSeconds", numberOfSecondsRemaining);
-        return applyDrawing(request, response, model,"goods_detail",GoodsPrefix.GDETAIL,String.valueOf(goodsId));
+       // return applyDrawing(request, response, model,"goods_detail",GoodsPrefix.GDETAIL,String.valueOf(goodsId));
+        return  "goods_detail";
     }
 
 

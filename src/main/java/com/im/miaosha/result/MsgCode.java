@@ -20,6 +20,9 @@ public class MsgCode {
      * 服务器错误
      */
     public final static MsgCode SERVER_ERROR = new MsgCode(500100, "服务端异常");
+
+    public final static MsgCode ILLEGALREQUEST = new MsgCode(500101, "请求非法");
+
     ///登陆模块异常 5002xx
     public final static MsgCode MOBILEPHONENUMBERISEMPTY = new MsgCode(500201, "手机号码不能为空");
     public final static MsgCode PASSWORDCANNOTBEEMPTY = new MsgCode(500202, "密码不能为空");

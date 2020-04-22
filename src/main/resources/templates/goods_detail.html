@@ -49,7 +49,8 @@
         		<button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>
         		<input type="hidden" name="goodsId" th:value="${goods.id}" />
         	</form>-->
-            <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="domiaosha(${goods.id})">立即秒杀</button>
+            <input class="btn btn-primary btn-block" type="button" id="buyButton" onclick="domiaoshaPath()" value="立即秒杀" />
+            <input type="hidden" name="goodsId" id="goodsId" th:value="${goods.id}" />
 
         </td>
      </tr>
@@ -94,12 +95,41 @@ function countDown(){
 		$("#miaoshaTip").html("秒杀已经结束");
 	}
 }
-
-//秒杀
-function domiaosha(goods) {
-    alert(goods)
+//获取秒杀地址
+function domiaoshaPath() {
+    var  goodsid = $("#goodsId").val();
+    g_showLoading();
+    $.ajax({
+        url:'/miaosha/path',//地址
+        type:'GET',//类型
+        data:{goodsId:goodsid},
+        success:function(result,status){
+            if(result.code==0){
+                //进行实际的秒杀
+                domiaosha(result.data);
+            }else{
+                alert(result.msg)
+            }
+        }
+    });
 }
 
-
+//秒杀
+function domiaosha(path) {
+    var  goodsid = $("#goodsId").val();
+    g_showLoading();
+    $.ajax({
+        url:'/miaosha/'+path+'/do_miaosha',//地址
+        type:'POST',//类型
+        data:{goodsId:goodsid},
+        success:function(result,status){
+            if(result.code==0){
+                window.location.href="/miaosha/do_order?goodsId="+goodsid;
+            }else{
+               alert(result.msg)
+            }
+        }
+    });
+}
 </script>
 </html>

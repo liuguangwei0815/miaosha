@@ -4,6 +4,8 @@ import com.im.miaosha.model.MiaoshaUser;
 import com.im.miaosha.redis.MiaoShaUserPrefix;
 import com.im.miaosha.redis.RedisServer;
 import com.im.miaosha.service.MiaoshaUserServier;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  * @create: 2020-04-19 11:17
  **/
 @Component
+@Slf4j
 public class DistributedSessionConfig implements HandlerMethodArgumentResolver {
 
     @Autowired
@@ -54,6 +57,7 @@ public class DistributedSessionConfig implements HandlerMethodArgumentResolver {
         //获取token cookie获取
         String cookieToken = getTokenByCookie(request);
         if (StringUtils.isBlank(cookieToken) && StringUtils.isBlank(paramToken)) {
+            log.info("没有收到cookies携带的token或者是参数传递的cookie，不做处理");
             //如果获取不了什么也不做
             return null;
         }
@@ -65,10 +69,13 @@ public class DistributedSessionConfig implements HandlerMethodArgumentResolver {
         if (StringUtils.isBlank(token)) {
             return null;
         }
+        //这种其实就是对象缓存
         MiaoshaUser user = redisServer.getValue(MiaoShaUserPrefix.token, token, MiaoshaUser.class);
         //延迟登录时间
         if (user != null) {
             miaoshaUserServier.addOrDelayByToken(token, user, response);
+        } else {
+            log.info("该用户信息不存在，tokenKey：{}", token);
         }
         return user;
     }
@@ -76,7 +83,7 @@ public class DistributedSessionConfig implements HandlerMethodArgumentResolver {
     private String getTokenByCookie(HttpServletRequest request) {
         //变量所有的cookie如果name相等 返回
         Cookie[] cookies = request.getCookies();
-        if(cookies==null){
+        if (cookies == null) {
             return null;
         }
         for (Cookie cookie : cookies) {

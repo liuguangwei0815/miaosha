@@ -162,7 +162,7 @@ public class RedisServer {
      * @param t t
      * @return {@link String}
      */
-    private static <T> String objectToString(T t) {
+    public static <T> String objectToString(T t) {
         if (t == null) {
             return null;
         }
@@ -182,7 +182,7 @@ public class RedisServer {
      * @param str str
      * @return {@link T}
      */
-    private <T> T stringToObject(String str, Class<T> aClass) {
+    public <T> T stringToObject(String str, Class<T> aClass) {
         if (StringUtils.isBlank(str) || aClass == null) {
             return null;
         }
@@ -196,4 +196,25 @@ public class RedisServer {
             return JSON.toJavaObject(JSON.parseObject(str), aClass);
         }
     }
+
+    /**
+     * 删除方法
+     *
+     * @param keyPrefix 关键的前缀
+     * @param key       关键
+     * @return boolean
+     */
+    public <T> boolean delete(KeyPrefix keyPrefix, String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            //生成的key
+            String realKey = keyPrefix.getPrefix() + key;
+            return jedis.del(realKey)>0;
+        } finally {
+            //用完了需要关闭
+            returnPool(jedis);
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import com.im.miaosha.model.MiaoshaUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * @program: miaosha
@@ -33,4 +34,13 @@ public interface MiaoshaUserMapper {
     @Select("select * from miaosha_user where user_phone = #{userPhone}")
     public MiaoshaUser getUserByUserPhone(@Param("userPhone") String userPhone);
 
+
+    /**
+     * 更新通过id
+     *
+     * @param user 用户
+     * @return boolean
+     */
+    @Update("update miaosha_user set password = #{password}  where id = #{id}")
+    void updateById(MiaoshaUser user);
 }

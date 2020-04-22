@@ -55,8 +55,8 @@ public class MiaoshaUserServierImpI implements MiaoshaUserServier {
     }
 
     @Override
-    public void addOrDelayByToken(String token,MiaoshaUser user ,HttpServletResponse response) {
-         createSessionAndCookie(token,user,response);
+    public void addOrDelayByToken(String token, MiaoshaUser user, HttpServletResponse response) {
+        createSessionAndCookie(token, user, response);
     }
 
     /**
@@ -74,5 +74,51 @@ public class MiaoshaUserServierImpI implements MiaoshaUserServier {
         cookie.setPath("/");
         response.addCookie(cookie);
     }
+
+    /**
+     * 通过用户id获取用户信息（缓存）
+     *
+     * @param id id
+     * @return {@link MiaoshaUser}
+     */
+    public MiaoshaUser getById(long id) {
+        //先从缓存获取，有返回，没有db获取 然后在进行缓存
+        MiaoshaUser user = redisServer.getValue(MiaoShaUserPrefix.GETBYID, String.valueOf(id), MiaoshaUser.class);
+        if (user != null) {
+            return user;
+        }
+        //查询DB
+        user = miaoshaUserMapper.getUserById(id);
+        //存储db
+        redisServer.setKey(MiaoShaUserPrefix.GETBYID, String.valueOf(id), user);
+        return user;
+    }
+
+    /**
+     * 更新用户密码
+     *
+     * @param token    令牌
+     * @param fromPw   从pw
+     * @param id       id
+     * @param password 密码
+     * @return boolean
+     */
+    public boolean updatePw(String token, String fromPw, long id, String password) {
+        MiaoshaUser user = getById(id);
+        if (user == null) {
+            throw new BusinessException(MsgCode.USERDOESNOTEXIST);
+        }
+        MiaoshaUser tobenUser = new MiaoshaUser();
+        tobenUser.setId(id);
+        tobenUser.setPassword(MD5Utils.fromPassToDbPass(fromPw, user.getSalt()));
+        miaoshaUserMapper.updateById(tobenUser);
+
+        //更新缓存token的用户信息，这个不能删除 否者他就会不能登录了 重新更新下就可以了
+        redisServer.setKey(MiaoShaUserPrefix.token, token, tobenUser);
+        //删除查询的用户信息
+        redisServer.delete(MiaoShaUserPrefix.GETBYID, String.valueOf(id));
+        return true;
+    }
+
 
 }

@@ -26,5 +26,13 @@ public class Test1 {
         System.out.println(userService.getUserById(1));
     }
 
+//    @Autowired
+//    private MqSender mqSender;
+//
+//    @Test
+//    public void testMq() {
+//        mqSender.send("HAHA");
+//    }
+
 
 }

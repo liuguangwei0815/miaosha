@@ -36,7 +36,7 @@ public class GloabalExceptionHandler {
             ObjectError objectError = allErrors.get(0);
             return Result.fail(MsgCode.ABNORMALPARAMETERBINDING.fillArgs(objectError.getDefaultMessage()));
         } else {
-            log.error("%s异常：%s",MsgCode.SERVER_ERROR,e);
+            log.error(MsgCode.SERVER_ERROR.getMsg()+":",e);
             return Result.fail(MsgCode.SERVER_ERROR);
         }
     }

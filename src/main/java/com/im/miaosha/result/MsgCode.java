@@ -26,7 +26,7 @@ public class MsgCode {
     public final static MsgCode MOBILEPHONENUMBERFORMATISNOTCORRECT = new MsgCode(500203, "手机号码格式不正确");
     public final static MsgCode USERDOESNOTEXIST = new MsgCode(500204, "用户不存在");
     public final static MsgCode PASSWORDDOESNOTMATCH = new MsgCode(500204, "密码不匹配");
-    public final static MsgCode ABNORMALPARAMETERBINDING = new MsgCode(500204, "参数绑定异常：%s");
+    public final static MsgCode ABNORMALPARAMETERBINDING = new MsgCode(500204, "参数绑定异常：{}");
 
     //商品模块异常 5003xx
     //订单模块异常 5004xx

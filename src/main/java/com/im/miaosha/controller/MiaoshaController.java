@@ -57,4 +57,21 @@ public class MiaoshaController {
         return "order_detail";
     }
 
+    @RequestMapping("/do_order")
+    public String doOrderDetails(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId) {
+        model.addAttribute("user", user);
+        if (user == null) {
+            return "login";
+        }
+        //判断库存
+        GoodsVo gv = goodsService.getGoodsVoByGoodsId(goodsId);
+        //判断库存是否足够
+        OrderInfo orderInfo = miaoshaService.miaosha(user, gv);
+        model.addAttribute("orderInfo", orderInfo);
+        model.addAttribute("goods", gv);
+        return "order_detail";
+    }
+
+
+
 }

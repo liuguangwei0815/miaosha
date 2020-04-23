@@ -1,4 +1,0 @@
-logging:
-  level:
-    com.im.miaosha.dao: debug
-    org.apache.ibatis.logging: debug
